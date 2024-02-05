@@ -1,0 +1,20 @@
+-- 1.Get model names of the car owners, age of which greater than average age of all owners more than on 10% 
+-- SELECT DISTINCT model_name FROM cars WHERE owner_id IN
+-- (SELECT id FROM car_owners WHERE date_part('year', age(birth_date) ) / 100.0 > 
+-- (SELECT AVG(date_part('year', age(birth_date) )) / 100 + 0.1 FROM car_owners))
+--
+-- 2. Get person names of cars with maximal engine capacity
+-- SELECT (SELECT name FROM car_owners WHERE id = owner_id) FROM cars WHERE owner_id IS NOT null AND model_name IN
+-- (SELECT name FROM models WHERE engine_capacity = (SELECT max(engine_capacity) FROM models))
+--
+-- 3. Get two most popular models (according to the existing cars, not trade deals) 
+-- SELECT model_name FROM cars GROUP BY model_name ORDER BY count(*) DESC LIMIT 2
+-- 4. Get model names, cars of which have at least two different colors (consider using construction ‘exists’) 
+-- SELECT DISTINCT  model_name FROM cars c1 WHERE EXISTS
+-- (SELECT * FROM cars c2 WHERE c1.model_name = c2.model_name AND c1.color != c2.color)
+--
+-- 5. Display table of ages distribution by intervals of 10 years.
+-- How many persons have age in each interval.
+-- SELECT interval_number * 10 as min, 10 * (interval_number + 1) as max, count(*) as amount FROM
+-- (SELECT floor(date_part('year',age(birth_date)) / 10) as interval_number FROM car_owners)
+-- interval_numbers GROUP BY min, max ORDER BY min
